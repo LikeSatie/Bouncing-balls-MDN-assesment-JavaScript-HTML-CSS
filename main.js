@@ -13,14 +13,29 @@ function random(min, max) {
   return num;
 }
 
-function Ball(x, y, velX, velY, color, size) {
+function Shape(x, y, velX, velY, exists) {
   this.x = x;
   this.y = y;
   this.velX = velX;
   this.velY = velY;
+  this.exists = exists;
+}
+
+function Ball(x, y, velX, velY, exists, color, size) {
+  Shape.call(this, x, y, velX, velY, exists);
+
   this.color = color;
   this.size = size;
 }
+
+Ball.prototype = Object.create(Shape.prototype);
+Ball.prototype.constructor = Ball;
+
+Object.defineProperty(Ball.prototype, 'constructor', {
+  value: Ball,
+  enumerable: false,
+  writable: true
+});
 
 Ball.prototype.draw = function() {
   ctx.beginPath();
@@ -86,6 +101,7 @@ function loop() {
       random(0 + size, height - size),
       random(-7, 7),
       random(-7, 7),
+      true,
       'rgb(' +
         random(0, 255) +
         ',' +
