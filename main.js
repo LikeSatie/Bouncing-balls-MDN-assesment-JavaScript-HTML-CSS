@@ -1,3 +1,6 @@
+var para = document.querySelector('p');
+var count = 0;
+
 // setup canvas
 
 var canvas = document.querySelector('canvas');
@@ -104,7 +107,7 @@ EvilCircle.prototype.draw = function() {
   ctx.stroke();
 };
 
-EvilCircle.prototype.update = function() {
+EvilCircle.prototype.checkBounds = function() {
   if (this.x + this.size >= width) {
     this.x = -this.x;
   }
@@ -155,6 +158,9 @@ EvilCircle.prototype.collisionDetect = function() {
 
 var balls = [];
 
+var evilCircle = new EvilCircle(random(0, width), random(0, height), true);
+evilCircle.setControls();
+
 function loop() {
   ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
   ctx.fillRect(0, 0, width, height);
@@ -179,13 +185,21 @@ function loop() {
       size
     );
     balls.push(ball);
+    count++;
+    para.textContent = 'Ball count: ' + count;
   }
 
   for (var i = 0; i < balls.length; i++) {
-    balls[i].draw();
-    balls[i].update();
-    balls[i].collisionDetect();
+    if (balls[i].exists) {
+      balls[i].draw();
+      balls[i].update();
+      balls[i].collisionDetect();
+    }
   }
+
+  evilCircle.draw();
+  evilCircle.checkBounds();
+  evilCircle.collisionDetect();
 
   requestAnimationFrame(loop);
 }
